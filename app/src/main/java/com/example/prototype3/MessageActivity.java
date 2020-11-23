@@ -25,6 +25,7 @@ import android.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.example.prototype3.Adapter.MessageAdapter;
 import com.example.prototype3.Model.Chat;
+import com.example.prototype3.Model.Friend;
 import com.example.prototype3.Model.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,6 +53,7 @@ public class MessageActivity extends AppCompatActivity {
     String userid;
     String phoneNumber;
     String MyImage;
+    String friendPermit;
 
     ValueEventListener seenListener;
 
@@ -269,16 +271,38 @@ public class MessageActivity extends AppCompatActivity {
 
     //----------------------------------------------------------------------------------------------Phone Call
     private void makePhoneCall(){
+
+        friendPermit="Null";
+        FirebaseDatabase.getInstance().getReference("Friends").child(fuser.getUid()).child(userid).addValueEventListener(new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                friendPermit=snapshot.getValue(String.class);
+                Log.i("MessageActivityGetPermit",friendPermit+"-------------------------------------------------------");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MessageActivity.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+        Log.i("MessageActivityCallPermit",friendPermit+"--------------------------------------------");
         if(ContextCompat.checkSelfPermission(MessageActivity.this, Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(MessageActivity.this, new String[] {Manifest.permission.CALL_PHONE},REQUEST_CALL);
             makePhoneCall();
         }else{
-            new AlertDialog.Builder(MessageActivity.this)
-                    .setTitle("Phone Call")
-                    .setMessage("Do you want to call "+ username.getText().toString()+"?")
-                    .setPositiveButton("Yes", (dialog,which)->{startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+phoneNumber)));})
-                    .setNegativeButton("No",null)
-                    .show();
+            if(friendPermit.equals("All") || friendPermit.equals("Call")) {
+                new AlertDialog.Builder(MessageActivity.this)
+                        .setTitle("Phone Call")
+                        .setMessage("Do you want to call " + username.getText().toString() + "?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber)));
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }else{
+                Toast.makeText(this,"Friend:Permission Denied",Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
 }

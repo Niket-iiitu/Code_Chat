@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.prototype3.Dialogs.AddFriend;
+import com.example.prototype3.Dialogs.GroupMessage;
 import com.example.prototype3.Fragments.ChatsFragment;
 import com.example.prototype3.Fragments.ProfileFragment;
 import com.example.prototype3.Fragments.FriendFragment;
@@ -84,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 AddFriend friend = new AddFriend();
                 friend.setFriendContext(getApplicationContext());
                 friend.show(getSupportFragmentManager(),"Password Reset Dialog");
+
+            case R.id.groupChat:
+                GroupMessage message = new GroupMessage();
+                message.setContext(getApplicationContext());
+                message.show(getSupportFragmentManager(),"Group Message Dialog");
         }
         return false;
     }

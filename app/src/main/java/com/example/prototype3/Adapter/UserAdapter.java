@@ -44,8 +44,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.user_item,parent,false);
-        return new UserAdapter.ViewHolder(view);
+        if(viewType==1){
+            View view = LayoutInflater.from(context).inflate(R.layout.user_item, parent, false);
+            return new UserAdapter.ViewHolder(view);
+        }else{
+        View view = LayoutInflater.from(context).inflate(R.layout.no_friend, parent, false);
+        return new NoFriend(view);
+    }
     }
 
     @Override
@@ -83,6 +88,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
         return mUsers.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if(mUsers.size() > 0) return 1;
+        else return 0;
+    }
+
+    public class NoFriend extends UserAdapter.ViewHolder {
+        public NoFriend(View itemView){
+            super(itemView);
+        }
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         public TextView username,status;
