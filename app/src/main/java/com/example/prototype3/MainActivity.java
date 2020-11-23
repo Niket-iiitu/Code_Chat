@@ -85,11 +85,12 @@ public class MainActivity extends AppCompatActivity {
                 AddFriend friend = new AddFriend();
                 friend.setFriendContext(getApplicationContext());
                 friend.show(getSupportFragmentManager(),"Password Reset Dialog");
-
+                return true;
             case R.id.groupChat:
                 GroupMessage message = new GroupMessage();
                 message.setContext(getApplicationContext());
                 message.show(getSupportFragmentManager(),"Group Message Dialog");
+                return true;
         }
         return false;
     }
