@@ -1,5 +1,6 @@
 package com.example.prototype3.Adapter;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.example.prototype3.MessageActivity;
 import com.example.prototype3.Model.Friend;
 import com.example.prototype3.Model.Users;
 import com.example.prototype3.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -97,9 +99,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
         @Override
         public boolean onLongClick(View v){
 
-            //Remove Friend
-
-            return false;
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Remove Friend?")
+                    .setMessage("Do you want to remove "+ mUsers.get(getAdapterPosition()).getUsername()+"?")
+                    .setPositiveButton("Remove",(dialog,which)->{
+                        FirebaseDatabase.getInstance().getReference("Friends").child(FirebaseAuth.getInstance().getUid()).child(mUsers.get(getAdapterPosition()).getId()).setValue(null);
+                    })
+                    .setNegativeButton("Cancel",null)
+                    .create();
+            builder.show();
+            return true;
         }
     }
 }

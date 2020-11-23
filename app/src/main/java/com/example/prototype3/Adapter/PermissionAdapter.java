@@ -11,9 +11,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.prototype3.Dialogs.PermissionDialog;
+import com.example.prototype3.Fragments.ChatsFragment;
 import com.example.prototype3.MessageActivity;
 import com.example.prototype3.Model.Friend;
 import com.example.prototype3.Model.Users;
@@ -135,7 +139,10 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         @Override
         public void onClick(View v) {
             Friend fri = mFriends.get(getAdapterPosition());
-
+            PermissionDialog dialog = new PermissionDialog();
+            dialog.setFriendCredential(fri.getFriendCredential());
+            dialog.setPermit(fri.getPermissions());
+            dialog.show(((AppCompatActivity)context).getSupportFragmentManager(),"Change Permissions");
         }
 
 
