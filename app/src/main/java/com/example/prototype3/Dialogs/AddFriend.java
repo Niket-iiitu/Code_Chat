@@ -51,22 +51,37 @@ public class AddFriend extends AppCompatDialogFragment {
         friendName=Fview.findViewById(R.id.ViewFrienCredential);
         MyCredential= FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DatabaseReference UserReference = FirebaseDatabase.getInstance().getReference("MyUsers");
+
 
         friendCredential.addTextChangedListener(new TextWatcher(){
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                DatabaseReference UserReference = FirebaseDatabase.getInstance().getReference("MyUsers");
                 try{
                     UserReference.child(friendCredential.getText().toString()).addValueEventListener(new ValueEventListener(){
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Users friend = snapshot.getValue(Users.class);
-                            friendName.setText(friend.getUsername());
+                            if(snapshot.getValue()!=null){
+                                Users friend = snapshot.getValue(Users.class);
+                                friendName.setText(friend.getUsername());
 
-                            if(friend.getImageURL().equals("Default")){
-                                friendImage.setImageResource(android.R.drawable.sym_def_app_icon);
+                                if (friend.getImageURL().equals("Default")) {
+                                    friendImage.setImageResource(android.R.drawable.sym_def_app_icon);
+                                } else {
+                                    Glide.with(getActivity()).load(friend.getImageURL()).into(friendImage);
+                                }
                             }else{
-                                Glide.with(getActivity()).load(friend.getImageURL()).into(friendImage);
+
                             }
                         }
 
@@ -79,19 +94,7 @@ public class AddFriend extends AppCompatDialogFragment {
 
 
                 }catch(Exception e){
-                    Log.i("ADDFriend",e.getMessage()+"--------------------------------------------------------------------------------------");
-                    friendImage.setImageResource(android.R.drawable.sym_def_app_icon);
-                    friendName.setText("Friend");
                 }
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
             }
         });
 
